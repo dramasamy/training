@@ -3,7 +3,3 @@
 2. 'test' prefixed test functions or methods outside of class
 3. 'test' prefixed test functions or methods inside Test prefixed test classes (without an __init__ method)
 ```
-
-
-
-
