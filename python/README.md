@@ -1,7 +1,7 @@
-Python & PyTest Training 
-=========================
+Python Training 
+===============
 
-Python 3.6+ and PyTest 4.4+ training session code 
+Python 3.6+ training session code 
 
 Step 1 — Clone and Create Virtual environment 
 ---------------------------------------------
