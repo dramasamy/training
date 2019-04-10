@@ -1,0 +1,10 @@
+docker run -it centos # To run Centos latest image 
+docker build -t webapp . # Build image from Dockerfile
+docker image list
+docker run -p 80:5000 webapp 
+docker ps # list running docker images 
+docker stop <container name>
+docker exec -it <containername> /bin/sh # to enter into docker container; similar to SSH
+docker login
+docker tag webapp dineshkumarr/webapp
+docker push dineshkumarr/webapp 
