@@ -19,6 +19,16 @@ def test_noop_2(smtp_connection_finalization):
     assert response == 250
     assert 0  # for demo purposes
 
+def test_noop_100(smtp_connection_finalization):
+    response, msg = smtp_connection_finalization.noop()
+    assert response == 250
+    assert 0  # for demo purposes
+
+def test_noop_200(smtp_connection_finalization):
+    response, msg = smtp_connection_finalization.noop()
+    assert response == 250
+    assert 0  # for demo purposes
+
 
 def test_noop_3(smtp_connection_read_data_from_test):
     response, msg = smtp_connection_read_data_from_test.noop()
