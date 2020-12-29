@@ -1,0 +1,31 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: psp:role:kube-system:default:privileged
+  namespace: kube-system
+rules:
+- apiGroups:
+  - policy
+  resourceNames:
+  - privileged
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: psp:rolebinding:kube-system:default:privileged
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: psp:role:kube-system:default:privileged
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: kube-system
+---
+

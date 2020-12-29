@@ -1,0 +1,2 @@
+/etc/kubernetes/manifests/kube-apiserver.yaml
+    --enable-admission-plugins=PodSecurityPolicy
