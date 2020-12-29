@@ -1,0 +1,31 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: psp:role:web:default:restricted
+  namespace: web
+rules:
+- apiGroups:
+  - policy
+  resourceNames:
+  - restricted
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: psp:rolebinding:web:default:restricted
+  namespace: web
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: psp:role:web:default:restricted
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: web
+---
+

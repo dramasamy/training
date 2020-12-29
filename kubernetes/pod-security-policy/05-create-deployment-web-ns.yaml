@@ -1,0 +1,32 @@
+# Execute 'kubectl get deployment' to see the replica status
+# NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+# alpine-deployment   0/1     0            0           20s
+#
+# The replica controller doesn't have access to the PSP hence no pods will be created.
+#   kubectl auth can-i use podsecuritypolicy/privileged --as=system:serviceaccount:web:default -n web
+#   no
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alpine-deployment
+  namespace: web
+  labels:
+    app: alpine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alpine
+  template:
+    metadata:
+      labels:
+        app: alpine
+    spec:
+      containers:
+      - name: alpine
+        image: alpine:3.6
+        command:
+          - sleep
+          - "9999"
+

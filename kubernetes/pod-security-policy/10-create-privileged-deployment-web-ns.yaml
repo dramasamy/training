@@ -1,0 +1,32 @@
+# Execute 'kubectl get deployment' to see the replica status
+# alpine-deployment              1/1     1            1           26m
+# alpine-deployment-privileged   0/1     0            0           16s
+# 
+# 'restricted' PSP doesn't allow privileged containers.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alpine-deployment-privileged
+  namespace: web
+  labels:
+    app: alpine-privileged
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alpine-privileged
+  template:
+    metadata:
+      labels:
+        app: alpine-privileged
+    spec:
+      containers:
+      - name: alpine
+        image: alpine:3.6
+        command:
+          - sleep
+          - "9999"
+        securityContext:
+          privileged: true
+

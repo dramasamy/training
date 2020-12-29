@@ -1,0 +1,47 @@
+# By applying this the 'web' ns gets two PSP and this will change the deployment behavior.
+#
+# Policy Order
+# -----------
+# In addition to restricting pod creation and update, pod security policies can also be
+# used to provide default values for many of the fields that it controls. When multiple
+# policies are available, the pod security policy controller selects policies according 
+# to the following criteria:
+#
+# 1. PodSecurityPolicies which allow the pod as-is, without changing defaults or mutating
+#    the pod, are preferred. The order of these non-mutating PodSecurityPolicies doesn't 
+#    matter.
+# 2. If the pod must be defaulted or mutated, the first PodSecurityPolicy (ordered by name)
+#    to allow the pod is selected.
+#
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: psp:role:web:default:privileged
+  namespace: web
+rules:
+- apiGroups:
+  - policy
+  resourceNames:
+  - privileged
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: psp:rolebinding:web:default:privileged
+  namespace: web
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: psp:role:web:default:privileged
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: web
+---
+

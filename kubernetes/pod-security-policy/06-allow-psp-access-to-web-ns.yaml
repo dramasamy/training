@@ -1,0 +1,35 @@
+# Allowing access to any PSP (in our case it is PSP named 'privileged' lets replica controller to create pod)
+# NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+# alpine-deployment   1/1     1            1           11m
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: psp:role:web:default:privileged
+  namespace: web
+rules:
+- apiGroups:
+  - policy
+  resourceNames:
+  - privileged
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: psp:rolebinding:web:default:privileged
+  namespace: web
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: psp:role:web:default:privileged
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: web
+---
+
