@@ -1,0 +1,31 @@
+# Note: This is not a practical example; do not allow unknown IP address as egress
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-net-policy
+  namespace: net-policy
+spec:
+  podSelector:
+    matchLabels:
+      # Apply the ingress and egrees to the Pod's with lable 'app: db'
+      app: db
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - ipBlock:
+        # Allow the request from the following IP address to db Pod
+        # This IP address might be the external DB peer
+        cidr: 10.71.5.188/32
+    - podSelector:
+        matchLabels:
+          # Also allow requests from web backend Pods
+          app: web
+  egress:
+  - to:
+    - ipBlock:
+        # Allow DB to talk to extrenal IP address
+        cidr: 10.0.0.0/8
+
