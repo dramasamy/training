@@ -1,0 +1,21 @@
+1. Browse images
+
+    https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.19.md#v1194
+
+2. Downlaod server tar
+
+wget https://dl.k8s.io/v1.19.4/kubernetes-server-linux-amd64.tar.gz
+
+sha512sum kubernetes-server-linux-amd64.tar.gz == fc9de14121af682af167ef99ce8a3803c25e92ef4739ed7eb592eadb30086b2cb9ede51d57816d1c3835f6202753d726eba804b839ae9cd516eff4e94c81c189
+
+3. untar kubernetes-server-linux-amd64.tar.gz
+
+vagrant@vagrant:~/kubernetes/server/bin$ sha256sum kube-apiserver
+c54b4b6a5a44e1f8af43dc461d7dbb5bcb1609437eb27f4223634dfdeaf11a66  kube-apiserver
+
+sudo docker cp 3bd3d710fd9a:/ temp
+sha256sum temp/usr/local/bin/kube-apiserver 
+c54b4b6a5a44e1f8af43dc461d7dbb5bcb1609437eb27f4223634dfdeaf11a66  temp/usr/local/bin/kube-apiserver
+
+
+c54b4b6a5a44e1f8af43dc461d7dbb5bcb1609437eb27f4223634dfdeaf11a66 == c54b4b6a5a44e1f8af43dc461d7dbb5bcb1609437eb27f4223634dfdeaf11a66
