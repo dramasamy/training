@@ -10,12 +10,17 @@ sha512sum kubernetes-server-linux-amd64.tar.gz == fc9de14121af682af167ef99ce8a38
 
 3. untar kubernetes-server-linux-amd64.tar.gz
 
+4. Get SHA of downloaded binary
 vagrant@vagrant:~/kubernetes/server/bin$ sha256sum kube-apiserver
 c54b4b6a5a44e1f8af43dc461d7dbb5bcb1609437eb27f4223634dfdeaf11a66  kube-apiserver
+
+5. get SHA of in-usebinary from the cluster
+docker ps | grep api | grep -v pause
+3bd3d710fd9a        b15c6247777d                      "kube-apiserver --ad\u2026"   48 seconds ago      Up 47 seconds
 
 sudo docker cp 3bd3d710fd9a:/ temp
 sha256sum temp/usr/local/bin/kube-apiserver 
 c54b4b6a5a44e1f8af43dc461d7dbb5bcb1609437eb27f4223634dfdeaf11a66  temp/usr/local/bin/kube-apiserver
 
-
+6. Compare sha
 c54b4b6a5a44e1f8af43dc461d7dbb5bcb1609437eb27f4223634dfdeaf11a66 == c54b4b6a5a44e1f8af43dc461d7dbb5bcb1609437eb27f4223634dfdeaf11a66
