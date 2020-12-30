@@ -1,12 +1,15 @@
 1. get the Pod IP and ping the address
     [dinesh@master1 ~]$ kubectl get pods -o wide -n net-policy
     NAME                             READY   STATUS    RESTARTS   AGE   IP              NODE                NOMINATED NODE   READINESS GATES
-    db-deployment-9b75668-klhn7           1/1     Running   0          26m    10.244.71.211   worker3.novalocal   <none>           <none>
-    frontend-deployment-95c497f7b-fvkp5   1/1     Running   0          3m6s   10.244.71.212   worker3.novalocal   <none>           <none>
-    web-deployment-7694466dd-gj8hw        1/1     Running   0          26m    10.244.71.210   worker3.novalocal   <none>           <none>
+    db-deployment-9b75668-klhn7           1/1     Running   0          26m    10.244.71.211   worker3   <none>           <none>
+    frontend-deployment-95c497f7b-fvkp5   1/1     Running   0          3m6s   10.244.71.212   worker3   <none>           <none>
+    web-deployment-7694466dd-gj8hw        1/1     Running   0          26m    10.244.71.210   worker3   <none>           <none>
 
 2. Ping 10.244.71.211 from master - IP won't be reachable
 3. Ping 10.244.71.211 from web-deployment-7694466dd-gj8hw - Reachable
 4. Ping 10.244.71.211 from frontend-deployment-95c497f7b-fvkp5 - Not reachable
 5. Ping 10.244.71.211 from 10.71.5.188 - Reachable
 6. Ping 10.71.5.188 from db - Reachable
+
+Note:
+    DB Pod will be always reachable from worker3 as the Pod runs there - No network policy can stop that
