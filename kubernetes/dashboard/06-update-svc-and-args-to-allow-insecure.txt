@@ -1,0 +1,24 @@
+# Note: This is for learning purpose, do not enable this in production cluster
+
+1. Update deployment args as follows
+kubectl get -n kubernetes-dashboard deploy kubernetes-dashboard -o jsonpath={.spec.template.spec.containers[0].args} | jq
+[
+  "--namespace=kubernetes-dashboard",
+  "--insecure-port=9090",
+  "--enable-skip-login=true",
+  "--enable-insecure-login=true"
+]
+
+2. Update SVC spect to allow insecure port 
+spec:
+  clusterIP: 10.103.82.35
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    k8s-app: kubernetes-dashboard
+  sessionAffinity: None
+  type: ClusterIP
+
+3. Now the dahsboard login can be skipped
