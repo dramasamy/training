@@ -1,0 +1,45 @@
+
+openssl genrsa -out dinesh.key 2048
+
+openssl req -new -key dinesh.key -out dinesh.csr
+
+cat dinesh.csr | base64 -w 0
+
+kubectl apply -f- << EOF
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: dinesh
+spec:
+  groups:
+  - system:authenticated
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ21EQ0NBWUFDQVFBd1V6RUxNQWtHQTFVRUJoTUNXRmd4RlRBVEJnTlZCQWNNREVSbFptRjFiSFFnUTJsMAplVEVjTUJvR0ExVUVDZ3dUUkdWbVlYVnNkQ0JEYjIxd1lXNTVJRXgwWkRFUE1BMEdBMVVFQXd3R1pHbHVaWE5vCk1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBekI4MEdINC81cnVrYlJuRmtMRVgKZUxRSXpJcXBEZUdHYUVLZU9SMUpGbFpnNW9zSEx4K3Y4dFQ1Tjl0RUFjS1QwVE9HOU9YS0IvVFd5STdrSmNHLwovRlEwek9PZWV3R2hNRDIxdVNPM3RzREpDVllUajhzQnNaaFNtZDE4bXFzaWlhMDFxRkJDT2xETDR2dG9WdnJqCmJBU09WMDBJc1JldmtreTVGaTF4S2hrTUhZSmQ2VTJrMUI3UHVLZEZPVFVkamNrZHM3K21HazNhY1FuSVFEdDQKSHlQSDFULzR0SDhIZjY5aWNNSnBITFYzaUxQMkVCaFg3UVE3cjNCYlVrM3lRdDlUL2pQazZaQTdHdzFjeGVpZgpjN3FlbHBnZlNVVk1HYWRhMmdCNm5ybG5ab1ZOWGM3MCtjS2RaN2F3U3R5bGVSRkYya01CZmhmanJwN2ltRkZMCkd3SURBUUFCb0FBd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFHd2FjVXNEcnFBTFV3Q0prUzJxaDJvakQxR2wKV0pTZjBlQncySnFHK1NOYXFPQ3JlaXNVVk5ac0w4aEdtRUFFdkVxSlNmeW1UUU0xNjh4Wm9zNTB5bGJPamtkNwpjclFSNzB1Q2pqMWlvaytWU04wT3hrOXlKT2tkb2lxUFJsVXNiYTJ2QVkvM3FET1BhZnVTWDNZVUNodDEyc3dDCnNBRHF4ckZuMlBRTmp0d01XeldzWWxjZ0pRL2pzMjhaUTQ2ME5FQ0Q0MzlPcCs3VmZxb1Q0enF0RG14Szk3cnEKR1M4dlZMcGFUeGM0ZWwyQ21IN3doc0VZUmhYWWdsUHNwVks3TnJTRWZIczRYUnA3TUVCM0hXS05WTjFQNkZLTwo4N2NrUlVXL04wMjRwV2xCL09LZStTSHVCZ3JvNjdsaXFBSFJnWnFmRDYrb1pVaENGK2xPV0JEQlFlbz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUgUkVRVUVTVC0tLS0tCg==
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+EOF
+
+kubectl get csr
+kubectl certificate  approve dinesh 
+kubectl get csr
+
+kubectl get csr/dinesh -o jsonpath={.status.certificate} | base64 --decode > dinesh.crt
+
+kubectl create clusterrole reader --verb=get,list,watch --resource=pods
+kubectl create clusterrolebinding reader --clusterrole=reader --user=dinesh
+kubectl auth can-i edit pods --all-namespaces --as=dinesh
+kubectl auth can-i list pods --all-namespaces --as=dinesh
+
+kubectl config set-credentials dinesh --client-key=/home/nokiauser/dinesh.key --client-certificate=/home/nokiauser/dinesh.crt --embed-certs=true
+
+kubectl config get-clusters
+kubectl config get-contexts
+kubectl config view
+kubectl config set-context dinesh --cluster=kubernetes --user=dinesh
+
+kubectl config view
+kubectl config use-context dinesh 
+kubectl config view
+
+kubectl get svc 
+
