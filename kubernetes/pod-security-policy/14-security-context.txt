@@ -1,0 +1,116 @@
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-demo
+spec:
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+  volumes:
+  - name: sec-ctx-vol
+    emptyDir: {}
+  containers:
+  - name: sec-ctx-demo
+    image: centos:centos8
+    command: [ "sh", "-c", "sleep 1h" ]
+    volumeMounts:
+    - name: sec-ctx-vol
+      mountPath: /data/demo
+    securityContext:
+      allowPrivilegeEscalation: false
+EOF
+
+kubectl exec -it security-context-demo -- id 
+# uid=1000 gid=3000 groups=2000
+
+# /data/demo $ ls -lrt
+# total 0
+# -rw-r--r--    1 1000     2000             0 Jan  3 23:12 1
+# /data/demo $ pwd
+# /data/demo
+
+
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-demo2
+spec:
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+  volumes:
+  - name: sec-ctx-vol
+    emptyDir: {}
+  containers:
+  - name: sec-ctx-demo2
+    image: centos:centos8
+    command: [ "sh", "-c", "sleep 1h" ]
+    volumeMounts:
+    - name: sec-ctx-vol
+      mountPath: /data/demo
+    securityContext:
+      runAsUser: 5000
+      allowPrivilegeEscalation: false
+EOF
+
+kubectl exec -it security-context-demo2 -- id 
+# uid=5000 gid=3000 groups=2000
+
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-nonet
+spec:
+  volumes:
+  - name: sec-ctx-vol
+    emptyDir: {}
+  containers:
+  - name: sec-ctx-nonet
+    image: centos:centos8
+    command: [ "sh", "-c", "sleep 1h" ]
+    volumeMounts:
+    - name: sec-ctx-vol
+      mountPath: /data/demo
+EOF
+
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-net
+spec:
+  volumes:
+  - name: sec-ctx-vol
+    emptyDir: {}
+  containers:
+  - name: sec-ctx-net
+    image: centos:centos8
+    command: [ "sh", "-c", "sleep 1h" ]
+    volumeMounts:
+    - name: sec-ctx-vol
+      mountPath: /data/demo
+    securityContext:
+      capabilities:
+        add: ["NET_ADMIN", "SYS_TIME"]
+EOF
+
+kubectl exec -it security-context-nonet -- cat /proc/1/status | grep Cap
+# CapInh:	00000000a80425fb
+# CapPrm:	00000000a80425fb
+# CapEff:	00000000a80425fb
+# CapBnd:	00000000a80425fb
+# CapAmb:	0000000000000000
+
+
+kubectl exec -it security-context-net -- cat /proc/1/status | grep Cap
+# CapInh:	00000000aa0435fb
+# CapPrm:	00000000aa0435fb
+# CapEff:	00000000aa0435fb
+# CapBnd:	00000000aa0435fb
+# CapAmb:	0000000000000000
+

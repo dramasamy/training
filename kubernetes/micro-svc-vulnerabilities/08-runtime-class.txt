@@ -1,0 +1,37 @@
+# https://github.com/kubernetes/minikube/blob/master/deploy/addons/gvisor/README.md
+
+kubectl apply -f - << EOF
+apiVersion: node.k8s.io/v1beta1
+kind: RuntimeClass
+metadata:
+  name: gvisor
+  labels:
+    kubernetes.io/minikube-addons: gvisor
+    addonmanager.kubernetes.io/mode: Reconcile
+handler: runsc
+EOF
+
+
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gvisor
+spec:
+  runtimeClassName: gvisor
+  containers:
+  - name: gvisor
+    image: alpine:3.6
+    imagePullPolicy: IfNotPresent
+    command:
+    - sleep
+    - 1d
+    volumeMounts:
+    - name: foo
+      mountPath: "/etc/foo"
+      readOnly: true
+  volumes:
+  - name: foo
+    secret:
+      secretName: my-secret
+EOF
