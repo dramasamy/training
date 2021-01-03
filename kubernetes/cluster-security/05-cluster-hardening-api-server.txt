@@ -1,0 +1,84 @@
+https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/
+
+# API request as anonymous user
+[dinesh@master1 ~]$ curl https://localhost:6443 -k 
+{
+  "kind": "Status",
+  "apiVersion": "v1",
+  "metadata": {
+    
+  },
+  "status": "Failure",
+  "message": "forbidden: User \"system:anonymous\" cannot get path \"/\"",
+  "reason": "Forbidden",
+  "details": {
+    
+  },
+  "code": 403
+}
+
+# Disable anonymous auth.
+
+Add the following API server arg in the file /etc/kubernetes/manifests/kube-apiserver.yaml
+--anonymous-auth=false  # Default: true
+
+# API request as anonymous user, but Auth failed.
+kiauser@master1 ~]$ curl https://localhost:6443 -k 
+{
+  "kind": "Status",
+  "apiVersion": "v1",
+  "metadata": {
+    
+  },
+  "status": "Failure",
+  "message": "Unauthorized",
+  "reason": "Unauthorized",
+  "code": 401
+}
+
+# Insecure access enable and disable example
+
+Add the following API server arg in the file /etc/kubernetes/manifests/kube-apiserver.yaml
+- --insecure-port=8081
+
+# API request as anonymous user to the insecure port
+[dinesh@master1 ~]$ curl http://localhost:8081 -k 
+{
+  "paths": [
+    "/api",
+    "/api/v1",
+    "/apis",
+    "/apis/",
+    "/apis/admissionregistration.k8s.io",
+    "/apis/admissionregistration.k8s.io/v1",
+    "/apis/admissionregistration.k8s.io/v1beta1",
+    "/apis/apiextensions.k8s.io",
+    "/apis/apiextensions.k8s.io/v1",
+    "/apis/apiextensions.k8s.io/v1beta1",
+    "/apis/apiregistration.k8s.io",
+    "/apis/apiregistration.k8s.io/v1",
+    ...
+
+Note: set the port number to 0 to disable insecure port
+
+Access API server via Curl,
+
+   kubectl config view --raw -o yaml -o jsonpath={.clusters[0].cluster.certificate-authority-data} | base64 -d > cert.ca
+   kubectl config view --raw -o yaml -o jsonpath={.users[0].user.client-certificate-data} | base64 -d > client.cert
+   kubectl config view --raw -o yaml -o jsonpath={.users[0].user.client-key-data} | base64 -d > client.key
+
+curl https://kubernetes:6443 --cert client.cert --key client.key --cacert cert.ca --resolve kubernetes:6443:127.0.0.1
+
+
+[dinesh@master1 ~]$ curl https://kubernetes:6443 --cert client.cert --key client.key --cacert cert.ca --resolve kubernetes:6443:127.0.0.1
+{
+  "paths": [
+    "/api",
+    "/api/v1",
+    "/apis",
+    "/apis/",
+    "/apis/admissionregistration.k8s.io",
+    "/apis/admissionregistration.k8s.io/v1",
+    "/apis/admissionregistration.k8s.io/v1beta1",
+    "/apis/apiextensions.k8s.io",
+
