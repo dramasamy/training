@@ -1,5 +1,27 @@
 https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/
 
+
+https://kubernetes.io/docs/reference/access-authn-authz/
+    API Access Control
+    For an introduction to how Kubernetes implements and controls API access, read Controlling Access to the Kubernetes API.
+    
+    Reference documentation:
+    
+    Authenticating
+        Authenticating with Bootstrap Tokens
+    Admission Controllers
+        Dynamic Admission Control
+    Authorization
+        Role Based Access Control
+        Attribute Based Access Control
+        Node Authorization
+        Webhook Authorization
+    Certificate Signing Requests
+        including CSR approval and certificate signing
+    Service accounts
+        Developer guide
+        Administration
+
 # API request as anonymous user
 [dinesh@master1 ~]$ curl https://localhost:6443 -k 
 {

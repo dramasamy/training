@@ -1,0 +1,22 @@
+# By default NodeRestriction admission plugin would be enabled by kubeadm clusters; this restric the node to
+# modify the node lable prefixed with  node-restriction.kubernetes.io/
+
+[root@worker1 ~]# export KUBECONFIG=/etc/kubernetes/kubelet.conf 
+[root@worker1 ~]# 
+[root@worker1 ~]# kubectl get nodes
+NAME                STATUS   ROLES    AGE   VERSION
+master1.novalocal   Ready    master   45m   v1.19.4
+worker1.novalocal   Ready    worker   44m   v1.19.4
+worker2.novalocal   Ready    worker   44m   v1.19.4
+worker3.novalocal   Ready    worker   44m   v1.19.4
+[root@worker1 ~]# 
+[root@worker1 ~]# kubectl label node worker1.novalocal nodename=worker1
+node/worker1.novalocal labeled
+
+[root@worker1 ~]# kubectl label node worker1.novalocal nodename-
+node/worker1.novalocal labeled
+
+[root@worker1 ~]#  kubectl label node worker1.novalocal node-restriction.kubernetes.io/nodename=worker1
+Error from server (Forbidden): nodes "worker1.novalocal" is forbidden: is not allowed to modify labels: node-restriction.kubernetes.io/nodename
+[root@worker1 ~]# 
+ 
