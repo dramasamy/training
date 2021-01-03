@@ -30,7 +30,7 @@ kubectl create clusterrolebinding reader --clusterrole=reader --user=dinesh
 kubectl auth can-i edit pods --all-namespaces --as=dinesh
 kubectl auth can-i list pods --all-namespaces --as=dinesh
 
-kubectl config set-credentials dinesh --client-key=/home/nokiauser/dinesh.key --client-certificate=/home/nokiauser/dinesh.crt --embed-certs=true
+kubectl config set-credentials dinesh --client-key=/home/dramasam/dinesh.key --client-certificate=/home/dramasam/dinesh.crt --embed-certs=true
 
 kubectl config get-clusters
 kubectl config get-contexts

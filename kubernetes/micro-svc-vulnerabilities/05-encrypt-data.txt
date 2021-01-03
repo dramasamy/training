@@ -1,0 +1,34 @@
+https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/
+
+create a new encryption config file:
+
+cat << EOF > enc.yaml
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
+resources:
+  - resources:
+    - secrets
+    providers:
+    - aescbc:
+        keys:
+        - name: key1
+          secret: `head -c 32 /dev/urandom | base64`
+    - identity: {}
+EOF
+
+Add the folloing option to /etc/kubernetes/manifests/kube-apiserver.yaml
+--encryption-provider-config=/etc/kubernetes/etcd/enc.yaml
+
+Also, mount the host dir /etc/kubernetes/etcd to api-server Pod
+
+  - hostPath:
+      path: /etc/kubernetes/etcd
+      type: DirectoryOrCreate
+    name: k8s-enc
+
+
+    - mountPath: /etc/kubernetes/etcd
+      name: k8s-enc
+      readOnly: true
+
+
