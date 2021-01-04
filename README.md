@@ -1,2 +1,2 @@
 # training
-Python, PyTest and cloud training 
+Python, PyTest, Docker and Kubernetes training 
