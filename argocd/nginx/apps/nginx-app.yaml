@@ -1,14 +1,20 @@
-project: default
-source:
-  repoURL: 'git@github.com:dramasamy/training.git'
-  path: argocd/nginx/chart/
-  targetRevision: HEAD
-destination:
-  server: 'https://kubernetes.default.svc'
-  namespace: nginx
-syncPolicy:
-  automated:
-    prune: true
-    selfHeal: true
-  syncOptions:
-    - CreateNamespace=true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx
+spec:
+  destination:
+    name: ''
+    namespace: nginx
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: argocd/nginx/chart
+    repoURL: 'git@github.com:dramasamy/training.git'
+    targetRevision: HEAD
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
