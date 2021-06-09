@@ -1,0 +1,14 @@
+project: default
+source:
+  repoURL: 'git@github.com:dramasamy/training.git'
+  path: argocd/nginx/chart/
+  targetRevision: HEAD
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: nginx
+syncPolicy:
+  automated:
+    prune: true
+    selfHeal: true
+  syncOptions:
+    - CreateNamespace=true
