@@ -1,20 +1,71 @@
+Help()
+{
+   # Display Help
+   echo "Create a kind cluster and enroll it to Azure Arc, install AMA and container insights."
+   echo
+   echo "Syntax: create_and_enroll_kind_cluster.sh [-h|g|l]"
+   echo "options:"
+   echo "g     Resource group. Default: whoami-arc"
+   echo "l     Location. Default: eastus"
+   echo "h     Print this Help."
+   echo
+}
+
+debug()
+{
+   # Display debug message
+   echo "**************************************"
+   echo "STEP: $1"
+   echo "**************************************"
+}
 
 # Variables for the script
 SUBSCRIPTION_ID=`az account show --query id --output tsv`
 TENEANT_ID=`az account show --query tenantId --output tsv`
 LOCATION='eastus'
-RESOURCE_GROUP=dramasamy-arc
-LOG_ANALYTICS_WS_NAME=arcTestLaw
-DCR_NAME=arcConnectedServerDcr
-K8S_CLUSTER_NAME=upfCluster
+RESOURCE_GROUP=`whoami`-arc
+LOG_ANALYTICS_WS_NAME=`whoami`-law
+DCR_NAME=`whoami`-dcr
+K8S_CLUSTER_NAME=`whoami`-arc-remote-k8s
+SERVICE_PRINCIPLE_NAME=`whoami`-arc-sp
+VM_NAME=`whoami`-arc-vm
+ARC_CONNECTED_SERVER_NAME=$VM_NAME  # This is the name of the VM in the Azure Arc Connected Server 
 
-# Install extensions
+# Process the input options. Add options as needed.
+while getopts ":g:l:h:" option; do
+   case $option in
+      g) # Resource group
+         RESOURCE_GROUP=$OPTARG;;
+      l) # Location
+         LOCATION=$OPTARG;;
+      h) # display Help
+         Help
+         exit;;
+     \?) # Invalid option
+         echo "Error: Invalid option $option $OPTARG"
+         exit;;
+   esac
+done
+
+debug "Variables" 
+echo "SUBSCRIPTION_ID=${SUBSCRIPTION_ID}"
+echo "TENEANT_ID=${TENEANT_ID}"
+echo "LOCATION=${LOCATION}"
+echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
+echo "LOG_ANALYTICS_WS_NAME=${LOG_ANALYTICS_WS_NAME}"
+echo "DCR_NAME=${DCR_NAME}"
+echo "K8S_CLUSTER_NAME=${K8S_CLUSTER_NAME}"
+echo "SERVICE_PRINCIPLE_NAME=${SERVICE_PRINCIPLE_NAME}"
+echo "ARC_CONNECTED_SERVER_NAME=${ARC_CONNECTED_SERVER_NAME}"
+echo "VM_NAME=${VM_NAME}"
+
+debug "Install extensions"
 az extension add --name monitor-control-service
 az extension add --name connectedmachine 
 az extension add --name k8s-extension
 az extension add --name customlocation
 
-# Register resource provider
+debug "Register resource provider"
 az provider register --namespace 'Microsoft.HybridCompute'
 az provider register --namespace 'Microsoft.GuestConfiguration'
 az provider register --namespace 'Microsoft.HybridConnectivity'
@@ -23,16 +74,7 @@ az provider register --namespace 'Microsoft.KubernetesConfiguration'
 az provider register --namespace 'Microsoft.ExtendedLocation'
 az provider register --namespace 'Microsoft.PolicyInsights'
 
-# Debug info
-echo "SUBSCRIPTION_ID=${SUBSCRIPTION_ID}"
-echo "TENEANT_ID=${TENEANT_ID}"
-echo "LOCATION=${LOCATION}"
-echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
-echo "LOG_ANALYTICS_WS_NAME=${LOG_ANALYTICS_WS_NAME}"
-echo "DCR_NAME=${DCR_NAME}"
-echo "K8S_CLUSTER_NAME=${K8S_CLUSTER_NAME}"
-
-# Create ResourceGroup
+debug "Create ResourceGroup"
 az group create --name $RESOURCE_GROUP --location $LOCATION
 
 # ******************************************
@@ -40,10 +82,10 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
 # ******************************************
 
     # ---------------------------------------------------- 
-    # Create service principal for arc enrollment (Scope: resource group)
+    debug "Create service principal for arc enrollment (Scope: resource group)"
     # ---------------------------------------------------- 
     servicePrincipalSecret=`az ad sp create-for-rbac \
-                                --name arc-test-sp \
+                                --name $SERVICE_PRINCIPLE_NAME \
                                 --role "Azure Connected Machine Onboarding" \
                                 --scopes /subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP} \
                                 --years 1 \
@@ -51,15 +93,15 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
                                 --query password`
 
     servicePrincipalClientId=`az ad app list \
-                                --display-name arc-test-sp \
+                                --display-name $SERVICE_PRINCIPLE_NAME \
                                 --query [].appId -o tsv`
 
-    echo "servicePrincipalClientId: ${servicePrincipalClientId}"
-    echo "servicePrincipalSecret: ${servicePrincipalSecret}"
+    debug "servicePrincipalClientId: ${servicePrincipalClientId}"
+    debug "servicePrincipalSecret: ${servicePrincipalSecret}"
 
 
     # ---------------------------------------------------- 
-    # Assign role to the service principal
+    debug "Assign role to the service principal"
     # ---------------------------------------------------- 
     az role assignment create \
         --assignee $servicePrincipalClientId \
@@ -76,7 +118,7 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
 # ******************************************
 
     # ---------------------------------------------------- 
-    # Create log analytics workspace
+    debug "Create log analytics workspace"
     # ----------------------------------------------------
     LOG_ANALYTICS_WS_ID=`az monitor log-analytics workspace create \
                             -n $LOG_ANALYTICS_WS_NAME \
@@ -84,11 +126,11 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
                             --resource-group $RESOURCE_GROUP \
                             --query id \
                             --output tsv`
-    echo "LOG_ANALYTICS_WS_ID: ${LOG_ANALYTICS_WS_ID}"
+    debug "LOG_ANALYTICS_WS_ID: ${LOG_ANALYTICS_WS_ID}"
 
 
     # ---------------------------------------------------- 
-    # Create Data Collection Rule
+    debug "Create Data Collection Rule"
     # Prerequisites: Log Analytics Workspace
     # ----------------------------------------------------
     DCR_ID=`az monitor data-collection rule create \
@@ -99,11 +141,11 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
                 --data-flows streams=Microsoft-Syslog destinations=$LOG_ANALYTICS_WS_NAME \
                 --query id \
                 --output tsv`
-    echo "DCR_ID: ${DCR_ID}"
+    debug "DCR_ID: ${DCR_ID}"
 
 
     # ---------------------------------------------------- 
-    # Add syslog data source to the Data Collection Rule
+    debug "Add syslog data source to the Data Collection Rule"
     # ----------------------------------------------------
     az monitor data-collection rule syslog add \
         --rule-name $DCR_NAME \
@@ -119,15 +161,27 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
 # ******************************************
 
     # ---------------------------------------------------- 
-    # Create VM and install kubectl, kind, and azure-cli
+    debug "Create VM with cloud-int to install kubectl, kind, and azure-cli"
     # ---------------------------------------------------- 
-    az deployment group create \
+    # Create Azure VM with cloud-inint
+    az vm create \
         --resource-group $RESOURCE_GROUP \
-        --template-file azurevm.json \
-        --parameters "@azurevm.params.json"  \
-        --name arctest
+        --name $VM_NAME \
+        --location $LOCATION \
+        --size Standard_B2s \
+        --image UbuntuLTS \
+        --admin-username azureuser \
+        --ssh-key-values ~/.ssh/id_rsa.pub \
+        --custom-data cloud_init.yaml \
+        --public-ip-sku Standard
 
-    # Wait for cloud-init to complete
+    # az deployment group create \
+    #     --resource-group $RESOURCE_GROUP \
+    #     --template-file azurevm.json \
+    #     --parameters "@azurevm.params.json"  \
+    #     --name arctest
+
+    debug "Wait for cloud-init to complete - 200 seconds"
     sleep 200
 
     VM_IP=`az vm list-ip-addresses \
@@ -135,7 +189,7 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
             --resource-group $RESOURCE_GROUP \
             --query [].virtualMachine.network.publicIpAddresses[].ipAddress \
             -o tsv`
-    echo "VM_IP: ${VM_IP}"
+    debug "VM_IP: ${VM_IP}"
 
 
 # ******************************************
@@ -143,7 +197,7 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
 # ******************************************
 
     # ---------------------------------------------------- 
-    # Execute azcmagent connect to start the conected machine agent (Arc Connected Server)
+    debug "Execute azcmagent connect to start the conected machine agent (Arc Connected Server)"
     # Prerequisites: azcmagent, ServicePrincipalClientId, ServicePrincipalSecret
     # ---------------------------------------------------- 
     ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
@@ -155,35 +209,37 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
             --location $LOCATION \
             --subscription-id $SUBSCRIPTION_ID \
             --cloud 'AzureCloud'
+    
+    debug "wait for 30 seconds"
+    sleep 30
 
+    CONNECTED_MACHINE_ID=`az resource list \
+                            --location $LOCATION \
+                            -g $RESOURCE_GROUP\
+                            --name $ARC_CONNECTED_SERVER_NAME \
+                            --resource-type Microsoft.HybridCompute/machines  \
+                            --output tsv \
+                            --query [0].id`
+    debug "CONNECTED_MACHINE_ID: ${CONNECTED_MACHINE_ID}"
 
 # ******************************************
 #          CLUSTER VM LOGS VIA AMA
 # ******************************************
 
     #----------------------------------------------------
-    # Install Azure monitor agent (AMA) via connected machine agent
+    debug "Install Azure monitor agent (AMA) via connected machine agent"
     # Prerequisites: Arc for servers (connected machine agent)
     #----------------------------------------------------
     az connectedmachine extension create \
         --name AzureMonitorLinuxAgent \
         --publisher Microsoft.Azure.Monitor \
         --type AzureMonitorLinuxAgent \
-        --machine-name arctest-vm \
+        --machine-name $ARC_CONNECTED_SERVER_NAME \
         --resource-group $RESOURCE_GROUP \
         --location $LOCATION
 
-    CONNECTED_MACHINE_ID=`az resource list \
-                            --location $LOCATION \
-                            -g $RESOURCE_GROUP\
-                            --name arctest-vm \
-                            --resource-type Microsoft.HybridCompute/machines  \
-                            --output tsv \
-                            --query [0].id`
-    echo "CONNECTED_MACHINE_ID: ${CONNECTED_MACHINE_ID}"
-
     # ----------------------------------------------------
-    # Asscoiate the Data Collection Rule with the VM
+    debug "Asscoiate the Data Collection Rule with the VM"
     # Prerequisites: Data Collection Rule (DCR)
     # ----------------------------------------------------
     az monitor data-collection rule association create \
@@ -197,7 +253,7 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
 # ******************************************
 
     # ----------------------------------------------------
-    # Login via Service Principal
+    debug "Login with Service Principal"
     # ----------------------------------------------------
     ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
         az login \
@@ -207,7 +263,7 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
             -t $TENEANT_ID
 
     # ----------------------------------------------------
-    # Arc connected k8s cluster
+    debug "Arc connect k8s cluster"
     # Prerequisites: az login
     # ----------------------------------------------------
     ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
@@ -217,16 +273,19 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
         az connectedk8s connect \
             --name $K8S_CLUSTER_NAME \
             --resource-group $RESOURCE_GROUP
+    
+    debug "wait for 30 seconds"
+    sleep 30
 
     CONNECTED_CLUSTER_ID=`az connectedk8s show \
                             -n $K8S_CLUSTER_NAME \
                             -g $RESOURCE_GROUP  \
                             --query id \
                             -o tsv`
-    echo "CONNECTED_CLUSTER_ID: ${CONNECTED_CLUSTER_ID}"
+    debug "CONNECTED_CLUSTER_ID: ${CONNECTED_CLUSTER_ID}"
 
     # ----------------------------------------------------
-    # Create service account to access the cluster
+    debug "Create service account to access the cluster"
     # ----------------------------------------------------
     ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
         kubectl create serviceaccount admin-user
@@ -234,15 +293,17 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
     ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
         kubectl create clusterrolebinding admin-user-binding --clusterrole cluster-admin --serviceaccount default:admin-user
 
+    echo "*************** Token ********************"
     ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
         /home/azureuser/token.sh
+    echo "******************************************"
 
 # ******************************************
 #          K8S CONTAINER INSIGHTS
 # ******************************************
 
     # ----------------------------------------------------
-    # Azure container monitoring
+    debug "Install Azure container monitoring via k8s-extension"
     # Prerequisites: Log analytics workspace
     # ----------------------------------------------------
     az k8s-extension create \

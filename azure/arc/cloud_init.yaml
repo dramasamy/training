@@ -1,4 +1,7 @@
 #cloud-config
+runcmd:
+  - sleep 30
+
 write_files:
 - content: |
     sudo apt-get -y install ca-certificates curl gnupg lsb-release apt-transport-https 
@@ -23,7 +26,7 @@ write_files:
     az extension add --name customlocation
     
     # Download the installation package
-    wget https://aka.ms/azcmagent -O ~/install_linux_azcmagent.sh
+    sudo runuser -u azureuser -- wget https://aka.ms/azcmagent -O /home/azureuser/install_linux_azcmagent.sh
 
     current_hostname=$(hostname)
     sudo service walinuxagent stop
@@ -36,15 +39,14 @@ write_files:
     sudo ufw default allow incoming
 
     # Install the hybrid agent
-    bash ~/install_linux_azcmagent.sh
-
-    su - azureuser
-    kind create cluster
-    sudo runuser -u azureuser -- kind export kubeconfig
-
+    bash /home/azureuser/install_linux_azcmagent.sh
   path: /home/azureuser/install.sh
 
-write_files:
+- content: |
+    sudo runuser -u azureuser -- kind create cluster
+    sudo runuser -u azureuser -- kind export kubeconfig
+  path: /home/azureuser/kindcluster.sh
+
 - content: |
     SECRET_NAME=$(kubectl get serviceaccount admin-user -o jsonpath='{$.secrets[0].name}')
     TOKEN=$(kubectl get secret ${SECRET_NAME} -o jsonpath='{$.data.token}' | base64 -d | sed $'s/$/\\\n/g')
@@ -69,8 +71,7 @@ runcmd:
   - sudo chown azureuser:azureuser /home/azureuser
   - sudo chmod +x /home/azureuser/install.sh
   - sudo chmod +x /home/azureuser/token.sh
+  - sudo chmod +x /home/azureuser/kindcluster.sh
   - /home/azureuser/install.sh
-  - mkdir /home/azureuser/go
-  - mkdir /home/azureuser/go/src
-  - sudo echo "export GOPATH=/home/azureuser/go" >> /home/azureuser/.bashrc
+  - /home/azureuser/kindcluster.sh
   - sudo chown azureuser:azureuser -R /home/azureuser

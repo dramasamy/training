@@ -1,1 +1,1 @@
-az group delete --resource-group dramasamy-arc -y
+az group delete --resource-group `whoami`-arc -y
