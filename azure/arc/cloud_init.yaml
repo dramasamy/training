@@ -1,7 +1,4 @@
 #cloud-config
-runcmd:
-  - sleep 30
-
 write_files:
 - content: |
     sudo apt-get -y install ca-certificates curl gnupg lsb-release apt-transport-https 
