@@ -1,6 +1,7 @@
 #cloud-config
 write_files:
 - content: |
+    # Install docker and kubectl
     sudo apt-get -y install ca-certificates curl gnupg lsb-release apt-transport-https 
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg 
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 
@@ -22,15 +23,15 @@ write_files:
     az extension add --name k8s-extension
     az extension add --name customlocation
     
-    # Download the installation package
+    # Download the connected machine installation package
     sudo runuser -u azureuser -- wget https://aka.ms/azcmagent -O /home/azureuser/install_linux_azcmagent.sh
 
+    # Remove Azure specific agents and rules to treat this VM like a remote machine
     current_hostname=$(hostname)
     sudo service walinuxagent stop
     sudo waagent -deprovision -force
     sudo rm -rf /var/lib/waagent
     sudo hostnamectl set-hostname $current_hostname
-
     sudo ufw --force enable
     sudo ufw deny out from any to 169.254.169.254
     sudo ufw default allow incoming
