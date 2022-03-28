@@ -185,7 +185,7 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
     sleep 200
 
     VM_IP=`az vm list-ip-addresses \
-            --name arctest-vm \
+            --name $VM_NAME \
             --resource-group $RESOURCE_GROUP \
             --query [].virtualMachine.network.publicIpAddresses[].ipAddress \
             -o tsv`
