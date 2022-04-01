@@ -190,7 +190,7 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
             --query [].virtualMachine.network.publicIpAddresses[].ipAddress \
             -o tsv`
     debug "VM_IP: ${VM_IP}"
-
+    echo "ssh -o StrictHostKeyChecking=no azureuser@${VM_IP}" > ${VM_NAME}.ssh
 
 # ******************************************
 #            ARC CONNECTED SERVER
@@ -337,3 +337,5 @@ az group create --name $RESOURCE_GROUP --location $LOCATION
         --resource-group $RESOURCE_GROUP \
         --extension-type Microsoft.PolicyInsights \
         --name azurepolicy
+
+# Linux Arc-enabled machines should have Azure Monitor Agent installed /providers/Microsoft.Authorization/policyDefinitions/f17d891d-ff20-46f2-bad3-9e0a5403a4d3
