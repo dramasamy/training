@@ -27,16 +27,19 @@ The Azure Monitor agent (AMA) collects monitoring data from the guest operating 
     ./create_and_enroll_kind_cluster.sh
     ```
 ## Result of the script
-1. Service principal for arc enrollment
-2. Log analytics workspace
-3. Data collection rule
-4. A Ubuntu VM to start Kind cluster (Standard_B2s)
-5. .ssh file to conenct to the VM
-6. Arc connected server
-7. AMA installation in the connected server
-8. Asscoiate the Data Collection Rule with the VM
-9. Arc enroll the Kind cluster
-10. Install container insights
+NAME | TYPE 
+--- | --- 
+ContainerInsights(whoami-law) | Solution
+whoami-arc-remote-k8s | Kubernetes - Azure Arc
+whoami-arc-vm | Virtual machine
+whoami-arc-vm | Server - Azure Arc
+whoami-arc-vm_OsDisk | Disk
+whoami-arc-vmNSG | Network security group
+whoami-arc-vmPublicIP | Public IP address
+whoami-arc-vmVMNic | Network interface
+whoami-arc-vmVNET | Virtual network
+whoami-dcr | Data collection rule
+whoami-law | Log Analytics workspace
 
 ## Cleanup
 `delete_kind_cluster.sh` deletes the resource group whoami-arc
