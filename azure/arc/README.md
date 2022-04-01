@@ -31,11 +31,12 @@ The Azure Monitor agent (AMA) collects monitoring data from the guest operating 
 2. Log analytics workspace
 3. Data collection rule
 4. A Ubuntu VM to start Kind cluster (Standard_B2s)
-5. Arc connected server
-6. AMA installation in the connected server
-7. Asscoiate the Data Collection Rule with the VM
-8. Arc enroll the Kind cluster
-9. Install container insights
+5. .ssh file to conenct to the VM
+6. Arc connected server
+7. AMA installation in the connected server
+8. Asscoiate the Data Collection Rule with the VM
+9. Arc enroll the Kind cluster
+10. Install container insights
 
 ## Cleanup
 `delete_kind_cluster.sh` deletes the resource group whoami-arc
