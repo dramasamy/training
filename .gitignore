@@ -7,6 +7,9 @@ __pycache__
 # C extensions
 *.so
 
+# SSH files
+*.ssh
+
 # Distribution / packaging
 .Python
 build/
