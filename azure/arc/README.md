@@ -40,6 +40,7 @@ whoami-arc-vmVMNic | Network interface
 whoami-arc-vmVNET | Virtual network
 whoami-dcr | Data collection rule
 whoami-law | Log Analytics workspace
+dramasamy-arc-sp | Service Principle 
 
 ## Cleanup
 `delete_kind_cluster.sh` deletes the resource group whoami-arc
