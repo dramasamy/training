@@ -1,4 +1,4 @@
-source ../common_args.sh
+source ../common/args.sh
 
 LOG_ANALYTICS_WS_NAME=`whoami`-law
 DCR_NAME=`whoami`-dcr

@@ -1,4 +1,4 @@
-source ../common_args.sh
+source ../common/args.sh
 
 VNET_NAME=`whoami`-demo-vnet
 SUBNET_NAME_1=`whoami`-demo-subnet-1
