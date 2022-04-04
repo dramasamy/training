@@ -32,7 +32,7 @@ VM_NAME=`whoami`-arc-vm
 ARC_CONNECTED_SERVER_NAME=$VM_NAME  # This is the name of the VM in the Azure Arc Connected Server 
 
 # Process the input options. Add options as needed.
-while getopts ":g:l:h:" option; do
+while getopts ":g:l:h" option; do
    case $option in
       g) # Resource group
          RESOURCE_GROUP=$OPTARG;;
