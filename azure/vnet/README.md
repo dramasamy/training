@@ -1,4 +1,24 @@
-# Azure Networking
+# Azure Virtual Network
+
+Azure Virtual Network (VNet) is the fundamental building block for your private network in Azure. VNet enables many types of Azure resources, such as Azure Virtual Machines (VM), to securely communicate with each other, the internet, and on-premises networks. VNet is similar to a traditional network that you'd operate in your own data center, but brings with it additional benefits of Azure's infrastructure such as scale, availability, and isolation.
+
+## Prerequisites
+1. Clone this git repo
+    ```
+    git clone https://github.com/dramasamy/training.git
+    ```
+2. Login to your Azure account
+    ```
+    az login
+    ```
+3. Set a subscription to be the current active subscription.
+    ```
+    az account set --subscription <subscription-id>
+    ```
+4. Go to the azue/vnet directory
+    ```
+    cd training/azure/vnet
+    ```
 
 ## Task - 1
 1. Create a virtual network (vnet) with subnet.
