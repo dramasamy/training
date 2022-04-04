@@ -9,6 +9,7 @@ __pycache__
 
 # SSH files
 *.ssh
+cleanup.sh
 
 # Distribution / packaging
 .Python

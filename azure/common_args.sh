@@ -51,3 +51,6 @@ echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
 debug "Create ResourceGroup"
 az group create --name $RESOURCE_GROUP --location $LOCATION
 
+debug "Create cleanup script"
+echo "az group delete --resource-group  $RESOURCE_GROUP -y" > cleanup.sh
+chmod +x cleanup.sh
