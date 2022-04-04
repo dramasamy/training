@@ -40,3 +40,6 @@ Azure Virtual Network (VNet) is the fundamental building block for your private 
 
 ### Script name
 `./create_vms_with_diff_subnet.sh`
+
+## Cleanup
+Auto-generated `cleanup.sh` deletes the resource group.
