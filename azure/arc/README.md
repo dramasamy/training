@@ -43,4 +43,4 @@ whoami-law | Log Analytics workspace
 dramasamy-arc-sp | Service Principle 
 
 ## Cleanup
-Auto-generated `cleanup.sh` deletes the resource group whoami-arc
+Auto-generated `cleanup.sh` deletes the resource group.
