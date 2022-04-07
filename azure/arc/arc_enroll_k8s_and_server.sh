@@ -179,6 +179,8 @@ az provider register --namespace 'Microsoft.PolicyInsights'
     ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
         kubectl create clusterrolebinding admin-user-binding-2 --clusterrole cluster-admin --user=$AAD_ENTITY_OBJECT_ID
 
+    # Use --group in above command to grant access to a AAD group
+
     az role assignment create --role "Azure Arc Kubernetes Viewer" --assignee $AAD_ENTITY_OBJECT_ID --scope $CONNECTED_CLUSTER_ID
 
     # Kubectl access via the AAD - Proxy mode
@@ -189,4 +191,5 @@ az provider register --namespace 'Microsoft.PolicyInsights'
     echo "#              Azure RBAC                       #"
     echo "#################################################"
 
-    # Azure RBAC - Auth checks redirects to Azure AD
+    # Azure RBAC - API Server -> Guard -> Azure RBAC (Please refer azure_rbac.sh)
+    
