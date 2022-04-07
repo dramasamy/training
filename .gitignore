@@ -10,6 +10,9 @@ __pycache__
 # SSH files
 *.ssh
 cleanup.sh
+cloud_init.yaml
+.accessCheck.json
+vars.txt
 
 # Distribution / packaging
 .Python

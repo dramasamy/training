@@ -20,11 +20,24 @@ debug()
    echo "**************************************"
 }
 
+writevars()
+{
+   # Display debug message
+   echo "$1" >> vars.txt
+}
+
+echo "" > vars.txt
+
 # Variables for the script
 SUBSCRIPTION_ID=`az account show --query id --output tsv`
 TENEANT_ID=`az account show --query tenantId --output tsv`
 LOCATION='eastus'
 RESOURCE_GROUP=`whoami`-arc
+
+writevars "SUBSCRIPTION_ID=${SUBSCRIPTION_ID}"
+writevars "TENEANT_ID=${TENEANT_ID}"
+writevars "LOCATION=${LOCATION}"
+writevars "RESOURCE_GROUP=${RESOURCE_GROUP}"
 
 # Process the input options. Add options as needed.
 while getopts ":g:l:h" option; do
@@ -51,6 +64,6 @@ echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
 debug "Create ResourceGroup"
 az group create --name $RESOURCE_GROUP --location $LOCATION
 
-debug "Create cleanup script"
+debug "Create cleanup script 'cleanup.sh' in current directory"
 echo "az group delete --resource-group  $RESOURCE_GROUP -y" > cleanup.sh
 chmod +x cleanup.sh
