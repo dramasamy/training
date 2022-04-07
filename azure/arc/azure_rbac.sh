@@ -1,4 +1,8 @@
-source arc_enroll_k8s_and_server.sh minikube
+source arc_enroll_k8s_and_server.sh
+
+# -------------------------------------
+#                DRAFT
+# -------------------------------------
 
 # Create a new Azure AD application and get its appId value. This value is used in later steps as serverApplicationId.
 debug "Create a new server Azure AD application and get its appId value."
@@ -74,3 +78,25 @@ ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
         --features azure-rbac \
         --app-id "${SERVER_APP_ID}" \
         --app-secret "${SERVER_APP_SECRET}"
+
+ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
+    sudo mkdir /etc/guard
+
+ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
+    kubectl get secret azure-arc-guard-manifests -n kube-system -o=go-template='{{index .data "guard-authn-webhook.yaml"}}' | base64 -d > guard-authn-webhook.yaml
+
+ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
+    kubectl get secret azure-arc-guard-manifests -n kube-system -o=go-template='{{index .data "guard-authz-webhook.yaml"}}' | base64 -d > guard-authz-webhook.yaml
+
+ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
+    sudo mv guard-authn-webhook.yaml /etc/guard/
+
+ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
+    chmod +x /etc/guard/guard-authn-webhook.yaml
+
+ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
+    sudo mv guard-authz-webhook.yaml /etc/guard/
+
+ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
+    chmod +x /etc/guard/guard-authz-webhook.yaml
+
