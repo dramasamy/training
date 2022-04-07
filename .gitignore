@@ -13,6 +13,7 @@ cleanup.sh
 cloud_init.yaml
 .accessCheck.json
 vars.txt
+accessCheck.json
 
 # Distribution / packaging
 .Python

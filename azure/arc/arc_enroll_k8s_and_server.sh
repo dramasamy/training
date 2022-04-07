@@ -139,6 +139,18 @@ az provider register --namespace 'Microsoft.PolicyInsights'
     debug "CONNECTED_CLUSTER_ID: ${CONNECTED_CLUSTER_ID}"
     writevars "CONNECTED_CLUSTER_ID=${CONNECTED_CLUSTER_ID}"
 
+    echo "#################################################"
+    echo "#      Install cluster connect extension        #"
+    echo "#################################################"
+    ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
+        az connectedk8s enable-features \
+            --features cluster-connect \
+            -n $K8S_CLUSTER_NAME \
+            -g $RESOURCE_GROUP
+
+    echo "#################################################"
+    echo "#             Token Access Method               #"
+    echo "#################################################"
     # ----------------------------------------------------
     debug "Create service account to access the cluster"
     # ----------------------------------------------------
@@ -148,19 +160,33 @@ az provider register --namespace 'Microsoft.PolicyInsights'
     ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
         kubectl create clusterrolebinding admin-user-binding --clusterrole cluster-admin --serviceaccount default:admin-user
 
-    echo "#################################################"
-    echo "#                  Admin Token                  #"
-    echo "#################################################"
     ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
         /home/azureuser/token.sh
     echo "************************************************"
 
-    debug "Install cluster connect extension"
-    ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
-        az connectedk8s enable-features \
-            --features cluster-connect \
-            -n $K8S_CLUSTER_NAME \
-            -g $RESOURCE_GROUP
-
+    # Kubectl access via the service account token - Proxy mode
     debug "Kubectl access via the service account token - Proxy mode"
-    debug "az connectedk8s proxy -n $K8S_CLUSTER_NAME -g $RESOURCE_GROUP --token <token from above output>"
+    debug "az connectedk8s proxy -n $K8S_CLUSTER_NAME -g $RESOURCE_GROUP --token <token from above output> &"
+
+
+    echo "#################################################"
+    echo "#              AAD Access Method                #"
+    echo "#################################################"
+    AAD_ENTITY_OBJECT_ID=$(az ad signed-in-user show --query objectId -o tsv)
+    debug "AAD_ENTITY_OBJECT_ID: ${AAD_ENTITY_OBJECT_ID}"
+    writevars "AAD_ENTITY_OBJECT_ID=${AAD_ENTITY_OBJECT_ID}"
+
+    ssh -o "StrictHostKeyChecking no" azureuser@${VM_IP} \
+        kubectl create clusterrolebinding admin-user-binding-2 --clusterrole cluster-admin --user=$AAD_ENTITY_OBJECT_ID
+
+    az role assignment create --role "Azure Arc Kubernetes Viewer" --assignee $AAD_ENTITY_OBJECT_ID --scope $CONNECTED_CLUSTER_ID
+
+    # Kubectl access via the AAD - Proxy mode
+    debug "Kubectl access via the AAD - Proxy mode"
+    debug "az connectedk8s proxy -n $CLUSTER_NAME -g $RESOURCE_GROUP"
+
+    echo "#################################################"
+    echo "#              Azure RBAC                       #"
+    echo "#################################################"
+
+    # Azure RBAC - Auth checks redirects to Azure AD
