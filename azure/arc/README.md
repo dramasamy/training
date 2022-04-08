@@ -17,16 +17,21 @@ The Azure Monitor agent (AMA) collects monitoring data from the guest operating 
     ```
     az account set --subscription <subscription-id>
     ```
-## Run the script
-1. Go to the Azue/arc directory
+4. Go to the Azue/arc directory
     ```
     cd training/azure/arc
     ```
-2. Invoke the shell script
-    ```
-    ./create_and_enroll_kind_cluster.sh
-    ```
-## Result of the script
+## Tasks
+### Create and Arc enroll a VM and a kind cluster
+1. Run `./arc_enroll_k8s_and_server.sh`
+2. Login to Azure portal and look for `Server - Azure Arc` and `Kubernetes - Azure Arc` resources.
+3. Delete the resoures - `cleanup.sh`
+
+### Install AMA and Container insights
+1. Run `install_ama_and_container_insights.sh`
+2. Login to Azure portal and browse VM and container logs
+3. Delete the resoures - `cleanup.sh`
+#### Result of the script
 NAME | TYPE 
 --- | --- 
 ContainerInsights(whoami-law) | Solution
