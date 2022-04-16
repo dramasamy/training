@@ -89,3 +89,7 @@ In this lab, you have:
 
 - Created an assigned group (Mobility Admin)
 - Created a dynamic group (Mobility Users)
+
+#### What's next?
+- Create a user and assign to **mobility_admin**
+- Set the user department to mobility so that the user gets added to **dynamic** group **MobilityUsers**
