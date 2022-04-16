@@ -11,6 +11,7 @@ In this lab, you will:
 Task 01:
 - Create an **User** and assign to a group (**assigned**)
 - Set the department name to **mobility** so that the user gets dynamically assigned to **MobilityUsers**
+
 Task 02:
 - Delete a User
 
