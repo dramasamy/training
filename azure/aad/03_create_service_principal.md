@@ -29,7 +29,7 @@ Let's jump straight into creating the identity. If you run into a problem, check
 4. Select New registration. ![New reg](images/17_register_an_app.jpg)
 
 5. Name the application, select Register. ![register](images/18_sp_details.jpg)
-6. Select **Certificates & Secrets** from the left menu. ![data](images/19_client_secret_home.jpg)
+6. Select **Certificates & Secrets** from the left side menu. ![data](images/19_client_secret_home.jpg)
 7. Select **New Client Secret**, enter and name and **Add** ![data](images/20_create_secret.jpg)
 8. Copy the Client Secret. ![data](images/21_created_secret.jpg)
 
