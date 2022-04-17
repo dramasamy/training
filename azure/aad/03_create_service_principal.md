@@ -71,6 +71,7 @@ In this lab, you have:
 # CLI Commands
 1. Set variables
 ```
+LOCATION='eastus'
 SERVICE_PRINCIPLE_NAME=`whoami`-arc-sp
 RESOURCE_GROUP=`whoami`-arc
 SUBSCRIPTION_ID=`az account show --query id --output tsv`
