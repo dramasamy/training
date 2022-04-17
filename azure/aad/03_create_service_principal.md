@@ -8,7 +8,10 @@ wts:
 
 In this lab, you will:
 
-+ Task 1: Create a service principal
++ Task 01: Create a service principal
++ Task 02: Assign roles to the SP
+  - Assign **Kubernetes Cluster - Azure Arc Onboarding** role
+  - Assign **Azure Connected Machine Onboarding** role
 
 # Lab 01: Create a Service Principal
 
@@ -33,8 +36,34 @@ Let's jump straight into creating the identity. If you run into a problem, check
 7. Select **New Client Secret**, enter and name and **Add** ![data](images/20_create_secret.jpg)
 8. Copy the Client Secret. ![data](images/21_created_secret.jpg)
 
+## Task 02: Assign roles to the Service Principal
+
+- Permissions are grouped together into a role definition. It's typically just called a role. You can select from a list of several built-in roles. If the built-in roles don't meet the specific needs of your organization, you can create your own custom roles.
+- Scope is the set of resources that the access applies to. In Azure, you can specify a scope at four levels: management group, subscription, resource group, and resource. Scopes are structured in a parent-child relationship. Each level of hierarchy makes the scope more specific. You can assign roles at any of these levels of scope.
+- You can have up to 2000 role assignments in each subscription. This limit includes role assignments at the subscription, resource group, and resource scopes. You can have up to 500 role assignments in each management group.
+
+## Steps
+
+1. Sign in to the [Azure portal](https://portal.azure.com/).
+2. Go to the ResourceGroup or Subscription and click **Access control (IAM)** from the left menu. ![IAM](images/22_scope_resource_group_role_assignment.jpg) ![Add role home](images/23_iam_home.jpg)
+3. Click **Add role assignment** 
+4. On the Roles tab, select a role that you want to use. ![Add role](images/24_arc_machine_onboarding_select.jpg)
+5. In the Details column, click View to get more details about a role. ![role details](images/25_view_role.jpg)
+6. Click **Select role**, and Select Arc k8s onboarind role. ![role details 2](images/25_a_view_and_select_role.jpg) ![role details 3](images/25_b_view_and_select_role.jpg)
+7. Click **Select role**
+8.  On the Members tab, select **User, group, or service principal** to assign the selected role to one or more service principals (applications).
+9.  Click **Select members**.
+    ![role assignment home](images/26_role_assignment_members_home.jpg)
+10. You can type in the **Select** box to search the service principal.
+    ![select member](images/27_select_member_service_principal.jpg)
+11. On the Review + assign tab, review the role assignment settings.
+    ![selected member](images/28_selected_member.jpg)
+12. Click Review + assign to assign the role.
+    ![assign role](images/29_review_assign_role.jpg)
+
 #### Review
 
 In this lab, you have:
 
 - Created an AAD application and added a secret.
+- Assigned an Arc onboarding role to the Service Principal
