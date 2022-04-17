@@ -67,3 +67,45 @@ In this lab, you have:
 
 - Created an AAD application and added a secret.
 - Assigned an Arc onboarding role to the Service Principal
+
+# CLI Commands
+1. Set variables
+```
+SERVICE_PRINCIPLE_NAME=`whoami`-arc-sp
+RESOURCE_GROUP=`whoami`-arc
+SUBSCRIPTION_ID=`az account show --query id --output tsv`
+```
+2. Create Resource Group
+```
+az group create --name $RESOURCE_GROUP --location $LOCATION
+```
+
+3. Create Service Principle and store the secret
+```
+    servicePrincipalSecret=`az ad sp create-for-rbac \
+                                --name $SERVICE_PRINCIPLE_NAME \
+                                --role "Azure Connected Machine Onboarding" \
+                                --scopes /subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP} \
+                                --years 1 \
+                                --output tsv \
+                                --query password`
+```
+4. Get the SP client ID 
+```
+    servicePrincipalClientId=`az ad app list \
+                                --display-name $SERVICE_PRINCIPLE_NAME \
+                                --query [].appId -o tsv`
+```
+
+5. Assign roles
+```
+    az role assignment create \
+        --assignee $servicePrincipalClientId \
+        --role "Kubernetes Cluster - Azure Arc Onboarding" \
+        --scope /subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP}
+
+    az role assignment create \
+        --assignee $servicePrincipalClientId \
+        --role "Azure Connected Machine Onboarding" \
+        --scope /subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP}
+```
