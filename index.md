@@ -11,8 +11,9 @@ Hyperlinks to each of the walkthroughs. Instructors may choose to use the walkth
 ## Azure Labs
 
 Content Courtesy:
-+ https://github.com/MicrosoftLearning
-+ https://docs.microsoft.com/en-us/azure/
++ [MicrosoftLearning](https://github.com/MicrosoftLearning)
+  
++ [Azure Documentation](https://docs.microsoft.com/en-us/azure/)
 
 ### AAD
 
