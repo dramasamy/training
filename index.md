@@ -15,7 +15,7 @@ Content Courtesy:
   
 + [Azure Documentation](https://docs.microsoft.com/en-us/azure/)
 
-### AAD
+### Azure Active Directory (AAD)
 
 {% assign wts = site.pages | where_exp:"page", "page.url contains '/azure/aad'" %}
 | Module | Walkthrough |
@@ -26,6 +26,22 @@ Content Courtesy:
 ### Virtual Networking
 
 {% assign wts = site.pages | where_exp:"page", "page.url contains '/azure/vnet'" %}
+| Module | Walkthrough |
+| --- | --- | 
+{% for activity in wts %}| {{ activity.wts.module }} | [{{ activity.wts.title }}{% if activity.wts.type %} - {{ activity.wts.type }}{% endif %}]({{ site.github.url }}{{ activity.url }}) |
+{% endfor %}
+
+### Compute
+
+{% assign wts = site.pages | where_exp:"page", "page.url contains '/azure/compute'" %}
+| Module | Walkthrough |
+| --- | --- | 
+{% for activity in wts %}| {{ activity.wts.module }} | [{{ activity.wts.title }}{% if activity.wts.type %} - {{ activity.wts.type }}{% endif %}]({{ site.github.url }}{{ activity.url }}) |
+{% endfor %}
+
+### Azure Resource Manager (ARM)
+
+{% assign wts = site.pages | where_exp:"page", "page.url contains '/azure/arm'" %}
 | Module | Walkthrough |
 | --- | --- | 
 {% for activity in wts %}| {{ activity.wts.module }} | [{{ activity.wts.title }}{% if activity.wts.type %} - {{ activity.wts.type }}{% endif %}]({{ site.github.url }}{{ activity.url }}) |
