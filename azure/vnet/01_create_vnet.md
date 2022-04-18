@@ -1,6 +1,6 @@
 ---
 wts:
-    title: '01 - Create Virtual Network (10 min)'   
+    title: '01 - Create Virtual Network (5 min)'   
     module: 'Module 02 - Azure Virtual Network'
 ---
 

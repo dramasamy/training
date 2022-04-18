@@ -1,6 +1,6 @@
 ---
 wts:
-    title: '02 - Create NSG and associate to subnet (10 min)'   
+    title: '02 - Create NSG and associate to subnet (5 min)'   
     module: 'Module 02 - Azure Virtual Network'
 ---
 
