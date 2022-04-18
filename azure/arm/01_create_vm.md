@@ -13,4 +13,4 @@ To implement infrastructure as code for your Azure solutions, use Azure Resource
 # Lab 01: Create a VM using ARM template
 
 ## Task 01: Create a Linux VM using ARM template
-+ Follow this [link](https://azure.microsoft.com/en-us/resources/templates/vm-simple-linux/) to deploy a Linux Virtual Machine.
++ Follow this [link](https://azure.microsoft.com/en-us/resources/templates/vm-simple-linux/) and click **Deploy to Azure** to deploy a Linux Virtual Machine.
