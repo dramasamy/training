@@ -29,7 +29,9 @@ There are several group and membership types. The following information explains
 
 **Dynamic user**. Lets you use dynamic membership rules to automatically add and remove members. If a member's attributes change, the system looks at your dynamic group rules for the directory to see if the member meets the rule requirements (is added) or no longer meets the rules requirements (is removed).
 
-**To try 'dynamic' group, open https://portal.azure.com/#blade/Microsoft_AAD_IAM/LicensesMenuBlade/Overview and click "Get a free trial"; and activate 'AD premium P2' (License activation may take few minutes)**
+To try 'dynamic', open [Licenses](https://portal.azure.com/#blade/Microsoft_AAD_IAM/LicensesMenuBlade/Overview) and click **Get a free trial**; and activate 'AD premium P2' (License activation may take few minutes)
+
+![Premium](images/30_enable_p2.jpg)
 
 **Dynamic device**. Lets you use dynamic group rules to automatically add and remove devices. If a device's attributes change, the system looks at your dynamic group rules for the directory to see if the device meets the rule requirements (is added) or no longer meets the rules requirements (is removed).
 
