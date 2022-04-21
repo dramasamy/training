@@ -29,6 +29,8 @@ There are several group and membership types. The following information explains
 
 **Dynamic user**. Lets you use dynamic membership rules to automatically add and remove members. If a member's attributes change, the system looks at your dynamic group rules for the directory to see if the member meets the rule requirements (is added) or no longer meets the rules requirements (is removed).
 
+**To try 'dynamic' group, open https://portal.azure.com/#blade/Microsoft_AAD_IAM/LicensesMenuBlade/Overview and click "Get a free trial"; and activate 'AD premium P2' (License activation may take few minutes)**
+
 **Dynamic device**. Lets you use dynamic group rules to automatically add and remove devices. If a device's attributes change, the system looks at your dynamic group rules for the directory to see if the device meets the rule requirements (is added) or no longer meets the rules requirements (is removed).
 
 ## Task 01: Create a basic group
@@ -60,7 +62,6 @@ You can create a basic group and add your members at the same time; but in this 
 
 In Azure Active Directory (Azure AD), you can use rules to determine group membership based on user or device properties. When a group membership rule is applied, user and device attributes are evaluated for matches with the membership rule. When an attribute changes for a user or device, all dynamic group rules in the organization are processed for membership changes. Users and devices are added or removed if they meet the conditions for a group. Security groups can be used for either devices or users, but Microsoft 365 Groups can be only user groups. Using Dynamic groups requires Azure AD premium P1/P2 license or Intune for Education license. See [Dynamic membership rules](https://docs.microsoft.com/en-us/azure/active-directory/enterprise-users/groups-create-rule) for groups for more details.
 
-    >**Note**: To try 'dynamic' group, open https://portal.azure.com/#blade/Microsoft_AAD_IAM/LicensesMenuBlade/Overview and click "Get a free trial"; and activate 'AD premium P2' (License activation may take few minutes)
 
 ## Rule builder in the Azure portal
 Azure AD provides a rule builder to create and update your important rules more quickly. The rule builder supports the construction up to five expressions. The rule builder makes it easier to form a rule with a few simple expressions, however, it can't be used to reproduce every rule. If the rule builder doesn't support the rule you want to create, you can use the text box.
