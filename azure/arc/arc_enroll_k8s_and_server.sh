@@ -73,7 +73,9 @@ az provider register --namespace 'Microsoft.PolicyInsights'
 # ******************************************
 #            ARC CONNECTED SERVER
 # ******************************************
-
+    debug "Wait 60 seconds for auth token to update"
+    sleep 60
+    
     # ---------------------------------------------------- 
     debug "Execute azcmagent connect to start the conected machine agent (Arc Connected Server)"
     # Prerequisites: azcmagent, ServicePrincipalClientId, ServicePrincipalSecret
