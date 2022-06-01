@@ -37,3 +37,9 @@ In this lab, you will:
 In this lab, you have:
 
 - Installed Azure Monitor (Container Insights) on the Arc connected k8s cluster.
+
+
+Topics to read,
+
+https://docs.microsoft.com/en-us/azure/azure-monitor/visualize/workbooks-overview
+
