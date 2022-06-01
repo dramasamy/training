@@ -17,11 +17,11 @@ In this lab, you will:
         ```
         git clone https://github.com/dramasamy/training.git
         ```
-   + Login to your Azure account
+   + Login to your Azure account (Ignore this step for cloud shell)
         ```
         az login
         ```
-   + Set a subscription to be the current active subscription.
+   + Set a subscription to be the current active subscription. Please use the personal account.
         ```
         az account set --subscription <subscription-id>
         ```
