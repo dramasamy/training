@@ -40,6 +40,7 @@ echo I2Nsb3VkLWNvbmZpZwp3cml0ZV9maWxlczoKLSBjb250ZW50OiB8CiAgICAjIEluc3RhbGwgZG9
     debug "VM_IP: ${VM_IP}"
     writevars "VM_IP=${VM_IP}"
     echo "ssh -o StrictHostKeyChecking=no azureuser@${VM_IP}" > ${VM_NAME}.ssh
+    chmod +x ${VM_NAME}.ssh
 
     debug "Wait for cloud-init to complete - 200 seconds"
     sleep 200
