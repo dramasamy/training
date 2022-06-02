@@ -52,7 +52,7 @@ You can create a basic group and add your members at the same time; but in this 
 
 4. Provide values for the following options:
    + Select a Subscription to link to by selecting from the drop-down list if the default selected is not appropriate.
-   + For Resource Group, choose to use an existing resource group already setup or create a new one.
+   + For Resource Group, choose to use an existing resource group already setup in the **pre-req step**
    + Provide a name for the new Log Analytics workspace, such as DefaultLAWorkspace. This name must be unique per resource group.
    + Select an available Region.
 ![Create LAW](images/02_law_create.jpg)
