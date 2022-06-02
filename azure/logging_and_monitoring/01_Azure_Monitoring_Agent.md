@@ -23,6 +23,7 @@ In this lab, you will:
         ```
         
     >**Note**: Ensure there is an SSH key in the cloud shell; if not, execute 'ssh-keygen' before executing the following command.
+
    + Execute the following command to create an Azure VM, Arc Connect, Create Kind Cluster and Arc connect Kind cluster.
         ```
         ./arc_enroll_k8s_and_server.sh
