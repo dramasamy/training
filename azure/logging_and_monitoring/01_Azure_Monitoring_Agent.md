@@ -32,7 +32,7 @@ In this lab, you will:
         ./arc_enroll_k8s_and_server.sh
         ```
 
-    >**Note**: This script will create ./<whoami>-arc-vm.ssh that helps to SSH into the VM from CloudShell and ./cleanup.sh that can be used at the end of the lab to delete all the resources.
+    >**Note**: This script will create ./'whoami'-arc-vm.ssh that helps to SSH into the VM from CloudShell and ./cleanup.sh that can be used at the end of the lab to delete all the resources.
 
 # Lab 01: Create a Log Analytics Workspace and DCR
  
