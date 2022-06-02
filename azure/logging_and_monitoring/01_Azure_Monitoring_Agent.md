@@ -21,7 +21,7 @@ In this lab, you will:
         ```
         cd training/azure/arc
         ```
-   + Execute the following command to create an Azure VM, Arc Connect, Create Kind Cluster and Arc connect Kind cluster
+   + Execute the following command to create an Azure VM, Arc Connect, Create Kind Cluster and Arc connect Kind cluster; PLease ensure there is a SSH key in the clous shell, if not execute 'ssh-keygen' before executing the following command.
         ```
         ./arc_enroll_k8s_and_server.sh
         ```
