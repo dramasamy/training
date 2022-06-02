@@ -1,4 +1,4 @@
-source arc_enroll_k8s_and_server.sh
+source ../arc/arc_enroll_k8s_and_server.sh
 
 LOG_ANALYTICS_WS_NAME=`whoami`-law
 DCR_NAME=`whoami`-dcr
