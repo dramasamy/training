@@ -22,9 +22,10 @@ In this lab, you will:
         cd training/azure/arc
         ```
         
-   + Ensure there is an SSH key in the cloud shell; if not, execute **ssh-keygen** to generate SSH keys as this will be used to SSH into the VM.
+   + Ensure there is an SSH key file (~/.ssh/id_rsa.pub) in the cloud shell; if not, execute **ssh-keygen** to generate SSH keys as this will be used to SSH into the VM.
         ```
         ssh-keygen
+        ls ~/.ssh/id_rsa.pub
         ```
  
    + Execute the following command to create an Azure VM, Arc Connect, Create Kind Cluster and Arc connect Kind cluster.
