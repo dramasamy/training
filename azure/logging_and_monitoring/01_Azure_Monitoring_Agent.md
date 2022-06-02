@@ -13,7 +13,7 @@ In this lab, you will:
 
 # Prerequisites
 1. Arc Connected server
-   + Clone the **training** repo from Azure **cloud shell**; If this repo already exists in your shell, please **git pull**.
+   + Clone the **training** repo in Azure **CloudShell**; If this repo already exists in your shell, please **git pull**.
         ```
         git clone https://github.com/dramasamy/training.git
         ```
