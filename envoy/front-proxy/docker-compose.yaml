@@ -1,0 +1,51 @@
+version: '3.7'
+services:
+
+  front-envoy:
+    image: envoyproxy/envoy:dev-47d28ec3ecea45486305fb850cdbd85428d90fa3
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    networks:
+      - envoymesh
+    expose:
+      # Expose ports 8000 (for general traffic) and 8001 (for the admin server)
+      - "8000"
+      - "8001"
+    ports:
+      # Map the host port 8000 to container port 8000, and the host port 8001 to container port 8001
+      - "8000:8000"
+      - "8001:8001"
+
+  service_blue:
+    image: gcr.io/tetratelabs/color-app:1.0.0
+    networks:
+      envoymesh:
+        aliases:
+          - service_blue
+    environment:
+      - BG_COLOR=blue
+    expose:
+      - "3000"
+  service_green:
+    image: gcr.io/tetratelabs/color-app:1.0.0
+    networks:
+      envoymesh:
+        aliases:
+          - service_green
+    environment:
+      - BG_COLOR=green
+    expose:
+      - "3000"
+  service_red:
+    image: gcr.io/tetratelabs/color-app:1.0.0
+    networks:
+      envoymesh:
+        aliases:
+          - service_red
+    environment:
+      - BG_COLOR=red
+    expose:
+      - "3000"
+
+networks:
+  envoymesh: {}
