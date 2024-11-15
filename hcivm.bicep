@@ -1,27 +1,24 @@
 param deployPrefix string
-param identifier string = ''
-param customLocationId string 
-param location string = 'eastus2euap'
-param csnNicName string 
+param identifier string
+param customLocationId string
+param location string
+param csnNicName string
 param l3nNicName string
-param vmMemoryMB int = 65536
-param vmProcessors int = 16
+param vmMemoryMB int
+param vmProcessors int
 param galleryImageId string
 param publicKeyPath string
 param publicKeyData string
-
-@allowed([
-  'Windows'
-  'Linux'
-])
-param osType string = 'Windows'
-
+param osType string
 @secure()
 param adminPassword string
+param vmIndex int
 
-var vmName = '${deployPrefix}-vm${identifier}'
+// Compute unique VM name
+var vmName = '${deployPrefix}-vm${identifier}-${vmIndex}'
 
-resource hybridCompute 'Microsoft.HybridCompute/machines@2024-07-10' = {
+// Hybrid Compute Resource
+resource vm 'Microsoft.HybridCompute/machines@2024-07-10' = {
   name: vmName
   location: location
   tags: {}
@@ -29,15 +26,17 @@ resource hybridCompute 'Microsoft.HybridCompute/machines@2024-07-10' = {
   identity: {
     type: 'SystemAssigned'
   }
+  properties: {}
 }
 
+// VM Instance Resource
 resource vmInstance 'Microsoft.AzureStackHCI/virtualMachineInstances@2024-08-01-preview' = {
-  name: 'default'
+  name: 'default' // Name is fixed as 'default'
   extendedLocation: {
     name: customLocationId
     type: 'CustomLocation'
   }
-  scope: hybridCompute
+  scope: vm
   properties: {
     hardwareProfile: {
       memoryMB: vmMemoryMB
@@ -65,7 +64,12 @@ resource vmInstance 'Microsoft.AzureStackHCI/virtualMachineInstances@2024-08-01-
       linuxConfiguration: osType == 'Linux' ? {
         disablePasswordAuthentication: true
         ssh: {
-          publicKeys: [{path: publicKeyPath, keyData: publicKeyData}]
+          publicKeys: [
+            {
+              path: publicKeyPath
+              keyData: publicKeyData
+            }
+          ]
         }
         provisionVMAgent: false
         provisionVMConfigAgent: false
